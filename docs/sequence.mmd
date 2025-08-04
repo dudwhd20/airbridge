@@ -1,0 +1,32 @@
+sequenceDiagram
+    participant User
+    participant ReservationSvc
+    participant Kafka
+    participant PaymentSvc
+    participant TicketingSvc
+
+    User->>ReservationSvc: 예약 요청
+    ReservationSvc->>ReservationSvc: 예약 데이터 저장 (PENDING)
+    ReservationSvc->>Kafka: reservation.created
+
+    Kafka->>PaymentSvc: consume reservation.created
+    PaymentSvc->>PaymentSvc: 결제 시도
+
+    alt 결제 성공
+        PaymentSvc->>Kafka: payment.completed
+        Kafka->>TicketingSvc: consume payment.completed
+        TicketingSvc->>TicketingSvc: 발권 시도
+
+        alt 발권 성공
+            TicketingSvc->>Kafka: ticket.issued
+            Kafka->>ReservationSvc: 최종 상태 → COMPLETED
+        else 발권 실패
+            TicketingSvc->>Kafka: ticket.failed
+            Kafka->>ReservationSvc: 보상 트랜잭션 → 예약 취소
+            Kafka->>PaymentSvc: 보상 트랜잭션 → 결제 취소
+        end
+
+    else 결제 실패
+        PaymentSvc->>Kafka: payment.failed
+        Kafka->>ReservationSvc: 보상 트랜잭션 → 예약 취소
+    endㅌ

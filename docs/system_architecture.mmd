@@ -1,0 +1,42 @@
+graph TD
+subgraph Gateway
+API_GW[API Gateway]
+end
+
+subgraph Frontend
+User[사용자]
+end
+
+subgraph UserService["User Service"]
+US1[회원가입/로그인]
+US2[JWT 발급]
+end
+
+subgraph ReservationService["Reservation Service"]
+RS1[항공편 조회]
+RS2[예약 생성]
+RS3[Kafka 발행 → 예약됨]
+end
+
+subgraph PaymentService["Payment Service"]
+PS1[예약됨 이벤트 수신]
+PS2[결제 처리]
+PS3[Kafka 발행 → 결제됨]
+end
+
+subgraph TicketingService["Ticketing Service"]
+TS1[결제됨 이벤트 수신]
+TS2[발권 처리]
+TS3[E-ticket 발행]
+end
+
+subgraph Kafka
+K1((예약됨 이벤트))
+K2((결제됨 이벤트))
+end
+
+User --> API_GW --> US1
+API_GW --> RS1
+API_GW --> RS2 --> RS3 --> K1
+K1 --> PS1 --> PS2 --> PS3 --> K2
+K2 --> TS1 --> TS2 --> TS3
