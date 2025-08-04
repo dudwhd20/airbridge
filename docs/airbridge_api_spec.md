@@ -4,7 +4,7 @@ MSA 구조 기반 항공 예약 시스템의 각 도메인별 REST API 목록입
 
 ---
 
-## 🧑‍톼 User Service
+## 🧑User Service
 
 ### 🔹 POST /api/users/register
 - 회원가입
@@ -48,7 +48,7 @@ MSA 구조 기반 항공 예약 시스템의 각 도메인별 REST API 목록입
 - Body:
 ```json
 {
-  "name": "변객된 이름"
+  "name": "변경된 이름"
 }
 ```
 
