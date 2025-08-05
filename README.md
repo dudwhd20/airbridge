@@ -48,12 +48,12 @@ AirBridge는 항공사 예약/발권 시스템의 핵심 기능을 MSA 기반으
 
 ---
 
-## 5. 공통 도메인
+## 5. 공통 라이브러리
+[공통 라이버리 저장소](https://github.com/dudwhd20/airbridge-common-lib)
 
 ### 기능
 
-- 공항/항공편 정보 관리
-- 스케줄 관리
+- 공통기능 정의 JWT, Common Error 
 - Kafka 이벤트 모니터링
 
 ---
