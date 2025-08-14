@@ -1,0 +1,3 @@
+rootProject.name = 'airbridge'
+include 'user-service'
+include 'common'
