@@ -5,30 +5,45 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.given
+import org.mockito.kotlin.mock
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
-import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.boot.test.context.TestConfiguration
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Import
+import org.springframework.context.annotation.Profile
 import org.springframework.http.MediaType
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.post
 import java.util.UUID
 
 @WebMvcTest(UserController::class)
 @AutoConfigureMockMvc(addFilters = false)
-class UserControllerTest() {
+@ActiveProfiles("test", "web-mock")
+@Import(UserControllerMockTest.MockConfig::class)
+class UserControllerMockTest {
+
+    @TestConfiguration
+    @Profile("web-mock")
+    class MockConfig {
+        @Bean
+        fun registerUserUseCase(): RegisterUserUseCase = mock()
+    }
 
     @Autowired
     private lateinit var mockMvc: MockMvc
 
+    @Autowired
+    private lateinit var objectMapper: ObjectMapper
 
-    @MockBean
+    @Autowired
     private lateinit var registerUserUseCase: RegisterUserUseCase
 
     @Test
     fun `회원가입이 성공하면 201을 반환한다`() {
         val userId = UUID.randomUUID()
-        val objectMapper : ObjectMapper = ObjectMapper()
 
         val request = RegisterUserRequest(
             email = "test@example.com",
