@@ -5,10 +5,12 @@ import com.airbridge.userservice.application.port.out.SaveUserPort
 import org.springframework.stereotype.Repository
 
 @Repository
-class UserRepositoryImpl : SaveUserPort {
+class UserRepositoryImpl(
+    private val userJpaRepository: UserJpaRepository
+) : SaveUserPort {
     override fun save(user: User): User {
-        // JPA 저장소 연동 예시 (실제 구현 필요)
-        return user
+        val entity = UserJpaEntity.fromDomain(user)
+        val saved = userJpaRepository.save(entity)
+        return saved.toDomain()
     }
 }
-

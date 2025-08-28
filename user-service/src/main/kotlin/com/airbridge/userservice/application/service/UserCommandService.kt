@@ -18,8 +18,6 @@ class UserCommandService(
             name = command.name
         )
         val saved = saveUserPort.save(user)
-        // User 도메인에 id가 없다면, 저장 후 id를 반환하는 방식으로 확장 필요
-        // 임시로 UUID.nameUUIDFromBytes(email+name) 사용
-        return UUID.nameUUIDFromBytes((saved.email + saved.name).toByteArray())
+        return requireNotNull(saved.id) { "Saved user id must not be null" }
     }
 }
