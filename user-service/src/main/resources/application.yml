@@ -1,1 +1,6 @@
-spring.application.name=airbridge-user-service
+server:
+  port: 8000
+
+spring:
+  application:
+    name: user-service
